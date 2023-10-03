@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import exphbs from 'express-handlebars'
 import bodyParser from 'body-parser';
+import methodOverride from 'method-override'
 import Todo from './models/todo.js';
 
 if(process.env.NODE_ENV !== "production") {
@@ -28,6 +29,7 @@ app.engine("hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
 app.set('view engine', 'hbs')
 
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(methodOverride('_method'))
 
 app.get('/', (req, res) => {
   // res.send('hello world')
@@ -66,27 +68,31 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch((error) => console.log(error));
 })
 
-app.post("/todos/:id/edit", (req, res) => {
+app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
   const {name, isDone} = req.body
-  return Todo.findById(id)
-    .then((todo) => {
-      todo.name = name
-      todo.isDone = isDone === 'on'
-      return todo.save()
-    })
-    .then(() => {
-      res.redirect(`/todos/${id}`)
-    })
-    .catch((error) => console.log(error));
+  return (
+    Todo.findById(id)
+      .then((todo) => {
+        todo.name = name
+        todo.isDone = isDone === 'on'
+        return todo.save()
+      })
+      .then(() => {
+        res.redirect(`/todos/${id}`)
+      })
+      .catch((error) => console.log(error))
+    )
 });
 
-app.post("/todos/:id/delete", (req, res) => {
+app.delete("/todos/:id", (req, res) => {
   const id = req.params.id;
-  return Todo.findById(id)
-    .then((todo) => todo.remove())
-    .then(() => res.redirect("/"))
-    .catch((error) => console.log(error));
+  return (
+    Todo.findById(id)
+      .then((todo) => todo.deleteOne())
+      .then(() => res.redirect("/"))
+      .catch((error) => console.log(error))
+  );
 });
 
 app.listen(3000, () => {
