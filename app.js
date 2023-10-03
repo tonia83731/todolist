@@ -5,6 +5,7 @@ import exphbs from 'express-handlebars'
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override'
 import Todo from './models/todo.js';
+import routes from './routes'
 
 if(process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -30,6 +31,7 @@ app.set('view engine', 'hbs')
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(methodOverride('_method'))
+app.use(routes)
 
 app.get('/', (req, res) => {
   // res.send('hello world')
