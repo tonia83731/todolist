@@ -3,10 +3,13 @@ const Schema = mongoose.Schema
 const todoSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   done: {
-    type: Boolean
-  }
-})
-module.exports = mongoose.model('Todo', todoSchema)
+    type: Boolean,
+    default: false, // 預設完成狀態為 false
+  },
+});
+
+const Todo = mongoose.model("Todo", todoSchema);
+export default Todo;
