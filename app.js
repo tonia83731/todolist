@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
   // res.render('index')
   Todo.find()
     .lean()
+    .sort({_id: 'asc'})
     .then(todos => res.render('index', {todos}))
     .catch(error => console.error(error))
 })
@@ -67,15 +68,24 @@ app.get('/todos/:id/edit', (req, res) => {
 
 app.post("/todos/:id/edit", (req, res) => {
   const id = req.params.id;
-  const name = req.body.name
+  const {name, isDone} = req.body
   return Todo.findById(id)
     .then((todo) => {
       todo.name = name
+      todo.isDone = isDone === 'on'
       return todo.save()
     })
     .then(() => {
       res.redirect(`/todos/${id}`)
     })
+    .catch((error) => console.log(error));
+});
+
+app.post("/todos/:id/delete", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .then((todo) => todo.remove())
+    .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
 

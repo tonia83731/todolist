@@ -6,7 +6,7 @@ const todoSchema = new Schema({
     type: String,
     required: true,
   },
-  done: {
+  isDone: {
     type: Boolean,
     default: false, // 預設完成狀態為 false
   },
