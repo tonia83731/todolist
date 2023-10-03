@@ -38,12 +38,14 @@ router.put("/:id", (req, res) => {
     .then(() => res.redirect(`/todos/${id}`))
     .catch(error => console.log(error))
 })
-router.delete('/:id', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .then(todo => todo.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  return Todo.findByIdAndRemove(id)
+    // .then((todo) => {
+    //   todo.remove();
+    // })
+    .then(() => res.redirect("/"))
+    .catch((error) => console.log(error));
+});
 
 export default router

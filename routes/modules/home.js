@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import Todo from "../modules/todos.js";
+import Todo from "../../models/todo.js";
 
 router.get("/", (req, res) => {
   Todo.find()
