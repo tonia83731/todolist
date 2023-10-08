@@ -15,15 +15,12 @@
       <a class="navbar-brand" href="/">
         {{#if isAuthenticated}}{{user.name}}'s{{/if}}
       </a>
-      <div class="">
-        <a class="btn btn-outline-light" href="/todos/new">Create</a>
-        {{#if isAuthenticated}}
-        <a href="/users/logout" class="btn btn-outline-light">Logout</a>
-        {{else}}
-        <a href="/users/login" class="btn btn-outline-light">Login</a>
-        {{/if}}
-      </div>
       
+      {{#if isAuthenticated}}
+      <a href="/users/logout" class="btn btn-outline-light">Logout</a>
+      {{else}}
+      <a href="/users/login" class="btn btn-outline-light">Login</a>
+      {{/if}}
     </nav>
   </header>
   <main>
