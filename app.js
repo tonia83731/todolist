@@ -1,4 +1,5 @@
 import express from 'express'
+import session from 'express-session';
 // import mongoose from "mongoose";
 // import dotenv from "dotenv";
 import exphbs from 'express-handlebars'
@@ -31,6 +32,11 @@ const PORT = process.env.PORT || 3000;
 app.engine("hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
 app.set('view engine', 'hbs')
 
+app.use(session({
+  secret: 'ThisIsMySecret',
+  resave: false,
+  saveUninitialized: true,
+}))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.use(routes)
