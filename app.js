@@ -9,6 +9,7 @@ import methodOverride from 'method-override'
 import routes from './routes/index.js'
 import './config/mongoose.js'
 
+import usePassport from './config/passport.js'
 // if(process.env.NODE_ENV !== "production") {
 //   dotenv.config();
 // }
@@ -39,6 +40,7 @@ app.use(session({
 }))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
+usePassport(app)
 app.use(routes)
 
 // app.get('/', (req, res) => {
