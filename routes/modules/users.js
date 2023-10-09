@@ -6,10 +6,15 @@ const router = express.Router();
 router.get("/login", (req, res) => {
   res.render("login");
 });
-router.post("/login", passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/user/login'
-}));
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/users/login",
+    failureFlash: false,
+    // failureFlash: `</br> 這裡可以放共通的 failure message`,
+  })
+);
 router.get("/register", (req, res) => {
   res.render("register");
 });
