@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../../models/user.js";
 import passport from "passport";
+import bcrypt from 'bcryptjs'
 const router = express.Router();
 
 router.get("/login", (req, res) => {
@@ -47,20 +48,27 @@ router.post("/register", (req, res) => {
         password,
         confirmPassword,
       });
-    } else {
-      // method 1
-      return User.create({ name, email, password })
-        .then(() => res.redirect("/"))
-        .catch((error) => console.log(error));
-      // method 2
-      // const newUser = new User({
-      //   name, email, password
-      // })
-      // newUser
-      //   .save()
-      //   .then(() => res.redirect('/'))
-      //   .catch(error => console.log(error))
     }
+    return bcrypt
+      .genSalt(10)
+      .then(salt => bcrypt.hash(password, salt))
+      .then(hash => User.create({
+        name, email, password: hash
+      }))
+      .then(() => res.redirect('/'))
+      .catch(error => console.log(error))
+    // method 1
+    // return User.create({ name, email, password })
+    //   .then(() => res.redirect("/"))
+    //   .catch((error) => console.log(error));
+    // method 2
+    // const newUser = new User({
+    //   name, email, password
+    // })
+    // newUser
+    //   .save()
+    //   .then(() => res.redirect('/'))
+    //   .catch(error => console.log(error))
   });
 });
 router.get('/logout', (req, res, next) => {
