@@ -1,5 +1,6 @@
 import passport from "passport";
 import User from "../models/user.js";
+import bcrypt from 'bcryptjs'
 import localstrategy from 'passport-local'
 const LocalStrategy = localstrategy.Strategy
 
@@ -22,14 +23,17 @@ export default (app) => {
                 req.flash("error", "That email is not registered!")
               );
             }
-            if (user.password !== password) {
-              return done(
-                null,
-                false,
-                req.flash("error", "Email or Password incorrect.")
-              );
-            }
-            return done(null, user);
+            return bcrypt.compare(password, user.password)
+              .then(isMatch => {
+                if(!isMatch){
+                  return done(
+                    null,
+                    false,
+                    req.flash("error", "Email or Password incorrect.")
+                  );
+                }
+                return done(null, user);
+              })
           })
           .catch((error) => done(error, false));
       }
