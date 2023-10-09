@@ -9,11 +9,12 @@ import methodOverride from 'method-override'
 import flash from 'connect-flash'
 import routes from './routes/index.js'
 import './config/mongoose.js'
+import dotenv from 'dotenv'
 
 import usePassport from './config/passport.js'
-// if(process.env.NODE_ENV !== "production") {
-//   dotenv.config();
-// }
+if(process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const app = express()
 const PORT = process.env.PORT || 3000;
@@ -34,11 +35,13 @@ const PORT = process.env.PORT || 3000;
 app.engine("hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
 app.set('view engine', 'hbs')
 
-app.use(session({
-  secret: 'ThisIsMySecret',
-  resave: false,
-  saveUninitialized: true,
-}))
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 usePassport(app)

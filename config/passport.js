@@ -3,6 +3,8 @@ import User from "../models/user.js";
 import bcrypt from 'bcryptjs'
 import localstrategy from 'passport-local'
 const LocalStrategy = localstrategy.Strategy
+import facebookstrategy from 'passport-facebook'
+const FacebookStrategy = facebookstrategy.Strategy
 
 export default (app) => {
   // 初始化passport模組
@@ -36,6 +38,36 @@ export default (app) => {
               })
           })
           .catch((error) => done(error, false));
+      }
+    )
+  );
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: process.env.FACEBOOK_ID,
+        clientSecret: process.env.FACEBOOK_SECRET,
+        callbackURL: process.env.FACEBOOK_CALLBACK,
+        profileFields: ["email", "displayName"],
+      },
+      (accessToken, refreshToken, profile, done) => {
+        // console.log(profile);
+        const { name, email } = profile._json;
+        User.findOne({ email }).then((user) => {
+          if (user) return done(null, user);
+          const randomPassword = Math.random().toString(36).slice(-8);
+          bcrypt
+            .genSalt(10)
+            .then((salt) => bcrypt.hash(randomPassword, salt))
+            .then((hash) =>
+              User.create({
+                name,
+                email,
+                password: hash,
+              })
+            )
+            .then((user) => done(null, user))
+            .catch((error) => done(error, false));
+        });
       }
     )
   );
